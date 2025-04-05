@@ -73,7 +73,7 @@ def test_add_choice_and_remove_and_add_again():
     question.remove_choice_by_id(1)
     question.add_choice('c', False)
 
-    choice = question.choices[0]
+    choice = question.choices[1]
     assert len(question.choices) == 2
     assert choice.text == 'c'
     assert not choice.is_correct
@@ -91,11 +91,11 @@ def test_check_if_choice_was_really_removed():
 
 def test_check_choice_without_text():
     with pytest.raises(Exception):
-        choice = Choice(1)
+        Choice(1)
 
 def test_check_choice_without_id():
     with pytest.raises(Exception):
-        choice = Choice("March 25")
+        Choice("March 25")
 
 def test_create_multiple_choices():
     question = Question(title='q1')
@@ -110,3 +110,26 @@ def test_create_multiple_choices():
     assert not c1.is_correct
     assert c2.text == 'b'
     assert c2.is_correct
+    
+def test_add_two_choices_with_same_text():
+    question = Question(title='q1')
+    
+    question.add_choice('b', False)
+    question.add_choice('b', True)
+
+    cho1 = question.choices[0]
+    cho2 = question.choices[1]
+    assert len(question.choices) == 2
+    assert cho1.text == 'b'
+    assert not cho1.is_correct
+    assert cho2.text == 'b'
+    assert cho2.is_correct
+    
+def test_select_choices():
+    question = Question(title='q1')
+    
+    question.add_choice('b', False)
+    question.add_choice('b', True)
+
+    choices = question.select_choices([2])
+    assert(choices[0] == 2)
