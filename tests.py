@@ -2,6 +2,15 @@ import pytest
 from model import Question
 from model import Choice
 
+@pytest.fixture
+def question_with_choices():
+    question = Question(title="Qual é a capital da França?", points=5, max_selections=1)
+   
+    question.add_choice("Paris", is_correct=True)
+    question.add_choice("Londres", is_correct=False)
+    question.add_choice("Roma", is_correct=False)
+    
+    return question
 
 def test_create_question():
     question = Question(title='q1')
@@ -133,3 +142,24 @@ def test_select_choices():
 
     choices = question.select_choices([2])
     assert(choices[0] == 2)
+    
+def test_add_duplicate_choices():
+    question = Question(title="Which of these are fruits?")
+    
+    question.add_choice('Apple', True)
+    question.add_choice('Apple', False)
+    
+    assert len(question.choices) == 2
+    assert question.choices[0].text == 'Apple'
+    assert question.choices[0].is_correct is True
+    assert question.choices[1].text == 'Apple'
+    assert question.choices[1].is_correct is False
+        
+def test_invalid_text_length_for_choice():
+    question = Question(title="What's the largest ocean?")
+    
+    with pytest.raises(Exception):
+        question.add_choice("", True)  
+    
+    with pytest.raises(Exception):
+        question.add_choice("a" * 101, False)
