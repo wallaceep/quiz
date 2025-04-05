@@ -59,4 +59,32 @@ def test_set_correct_choices():
 
     assert ch1.is_correct == True and ch2.is_correct == False and ch3.is_correct == True
 
-    
+def test_remove_choice_without_choices():
+    question = Question(title='q1')
+    question.add_choice('a', False)
+    question.remove_choice_by_id(1)
+    with pytest.raises(Exception):
+        question.remove_choice_by_id(1)
+
+def add_choice_and_remove_and_add_again():
+    question = Question(title='q1')
+    question.add_choice('a', False)
+    question.add_choice('b', True)
+    question.remove_choice_by_id(1)
+    question.add_choice('c', False)
+
+    choice = question.choices[0]
+    assert len(question.choices) == 2
+    assert choice.text == 'c'
+    assert not choice.is_correct
+
+def check_if_choice_was_really_removed():
+    question = Question(title='q1')
+    question.add_choice('a', False)
+    question.add_choice('b', True)
+    question.remove_choice_by_id(2)
+    question.add_choice('c', False)
+
+    choice = question.choices[1]
+    assert len(question.choices) == 2
+    assert not choice.text == 'b'
