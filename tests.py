@@ -1,5 +1,6 @@
 import pytest
 from model import Question
+from model import Choice
 
 
 def test_create_question():
@@ -34,3 +35,28 @@ def test_create_choice():
     assert len(question.choices) == 1
     assert choice.text == 'a'
     assert not choice.is_correct
+
+def test_remove_choice_by_id():
+    question = Question(title='q1')
+    question.add_choice('a', True)
+    question.add_choice('b', True)
+    choice = question._choice_by_id(1)
+    assert choice.id == 1
+    question.remove_choice_by_id(1)
+    assert len(question.choices) == 1   
+
+def test_set_correct_choices():
+    question = Question(title='q1')
+    question.add_choice('a', False)
+    question.add_choice('b', False)
+    question.add_choice('c', False)
+    question.add_choice('d', False)
+
+    question.set_correct_choices([1,3])
+    ch1 = question._choice_by_id(1)    
+    ch2 = question._choice_by_id(2)
+    ch3 = question._choice_by_id(3)
+
+    assert ch1.is_correct == True and ch2.is_correct == False and ch3.is_correct == True
+
+    
